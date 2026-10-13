@@ -1,0 +1,35 @@
+{
+ "schema": 1,
+ "id": "h301",
+ "for_verdict": "supported",
+ "question": "Did HN stories shift from chatbots to agents?",
+ "why": "It shows when AI talk on HN moved from one product name to a way of building.",
+ "opening": "From {window_b}, {n_b} stories matched \"agent\" or \"agents\" and {m_b} matched \"ChatGPT\" or \"GPT\". From {window_a}, it was {n_a} and {m_a}.",
+ "takeaway": "Agent stories went from {b} to {a} per chatbot story, a {ratio}x change. The card set its line before the check: {support_at}x or more would back the claim. This is past that line.",
+ "boundary": "\"Agent\" also matches secret agent and user agent. The base is every story since 2006, so it is dominated by the most recent early years and the direction matters more than the size. Matches show wording in stories, not what developers use.",
+ "explore": [
+  "h300"
+ ],
+ "counts": {
+  "n_a": {
+   "field": "agents_s",
+   "group": "a",
+   "op": "sum"
+  },
+  "m_a": {
+   "field": "gpt_s",
+   "group": "a",
+   "op": "sum"
+  },
+  "n_b": {
+   "field": "agents_s",
+   "group": "b",
+   "op": "sum"
+  },
+  "m_b": {
+   "field": "gpt_s",
+   "group": "b",
+   "op": "sum"
+  }
+ }
+}

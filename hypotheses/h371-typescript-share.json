@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "id": "h371",
+  "title": "TypeScript takes a bigger slice of all HN stories",
+  "question": "Does TypeScript show up in a larger share of story titles in the latest 12 months than before?",
+  "author": "film-cards",
+  "audience": "engineers",
+  "hypothesis": "TypeScript shows up in a larger share of all story titles in the latest 12 months than it did before.",
+  "expect": "If true, the share of all stories whose title names TypeScript should be at least 1.5x higher in the latest 12 months than in all earlier stories since 2006 (pooled) (1.15x is weak, 0.9x or lower refutes it).",
+  "check": {
+    "source": "data/film_shares.json",
+    "path": "monthly",
+    "label_field": "month",
+    "stat": "pooled_share_ratio",
+    "unit": "x",
+    "field": "typescript_s",
+    "per_label": "TypeScript stories per story",
+    "display_pct": false,
+    "group_a": {
+      "label": "Latest 12 months ({from} to {to})",
+      "indices": {
+        "last": 12
+      },
+      "field": "typescript_s",
+      "per": "total"
+    },
+    "group_b": {
+      "label": "All earlier stories ({from} to {to})",
+      "indices": {
+        "before_last": 12
+      },
+      "field": "typescript_s",
+      "per": "total"
+    }
+  },
+  "verdicts": [
+    {
+      "when": {
+        "op": ">=",
+        "value": 1.5
+      },
+      "verdict": "supported",
+      "confidence": "strong"
+    },
+    {
+      "when": {
+        "op": ">=",
+        "value": 1.15
+      },
+      "verdict": "supported",
+      "confidence": "weak"
+    },
+    {
+      "when": {
+        "op": "<=",
+        "value": 0.9
+      },
+      "verdict": "refuted",
+      "confidence": "strong"
+    },
+    {
+      "else": true,
+      "verdict": "inconclusive",
+      "confidence": "inconclusive"
+    }
+  ],
+  "thresholds_note": "Thresholds are the ones used on h300, written before this card was run. h300 is left unchanged.",
+  "caveats": [
+    "Title words only: stories about TypeScript that never say so in the title are missed.",
+    "The share is of all live stories, so a change in what else gets posted moves it too.",
+    "The latest 12 months stop at the last full month in the film file, not today."
+  ]
+}

@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Hacker News posts, explored</title>
+<meta name="description" content="A scrollable look at every Hacker News story since 2006, with a full explorer.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="hypotheses.css">
+</head><body>
+<div id="banner" hidden>SAMPLE DATA (synthetic). The real numbers are still being prepared.</div>
+<div id="progress"><i></i></div>
+
+<div class="view" role="main" id="v_aud" hidden>
+  <section class="aud">
+    <div class="audbar"><a class="back" id="aud_back" href="#/" aria-label="Back to home">&larr;<span>Back</span></a><p class="kicker" id="aud_kicker"></p></div>
+    <div id="aud_card"></div>
+  </section>
+</div>
+<div class="view" role="main" id="v_week" hidden>
+  <section class="wk">
+    <div class="audbar"><a class="back" id="w_back" href="#/" aria-label="Back to home">&larr;<span>Back</span></a><p class="kicker" id="w_kicker"></p></div>
+    <div id="w_body"></div>
+  </section>
+</div>
+<div class="view" role="main" id="v_phoenix" hidden><section class="aud"><a class="back" href="#/">&larr; Home</a><h2>Quiet, then back</h2><p class="sg_p">285 times, a word in story titles or a site went quiet for a year or more and then came back. We set the rules before we ran the numbers: a quiet spell is 12 months or more below a fifth of the old share, and a return is three months in a row at half the old share or more.</p><h3>What the numbers show</h3><ul class="sg_ul"><li>Half of the quiet spells lasted between 22 and 57 months. The middle one lasted 37.</li><li>The return month falls near a yearly anniversary of the first peak in 27.7% of cases. Months picked at random give 25.3% (5th to 95th percentile: 20.7% to 29.1%). So there is no sign of an anniversary pattern.</li><li>261 of the 285 fell back below a fifth of their old share within a year. Only 13 held on in a sharp return.</li></ul><h3>Three comebacks</h3><ul class="sg_ul"><li><b>trump</b>: quiet from Nov 2021, back in Nov 2024, after 36 months.</li><li><b>bing</b>: quiet from Feb 2020, back in Feb 2023, after 36 months.</li><li><b>cuba</b>: quiet from Oct 2011, back in Feb 2015, after 40 months.</li></ul><p class="sg_p">We show when each came back, not why.</p><h3>What we cannot tell you</h3><ul class="sg_ul"><li>Why anything came back. We have no dated outside events and no link between related terms, so we did not test causes.</li><li>Words are not topics. A topic whose words change can look quiet when it is not.</li><li>Site data holds only the top sites each month, so a site can seem to return by re-entering that list. Only 5 of the 285 are sites.</li><li>Points are low for 2023 and 2026, so we count stories and shares, not points.</li></ul><p class="sg_cav">Source: data/resurfacing/groups.json. Rules written before the run: docs/RESURFACING_SPEC.md.</p><p class="rg_note"><a class="deep" href="#/explore">Explore the data yourself</a></p></section></div>
+<div class="view" role="main" id="v_rings" hidden><section class="aud"><a class="back" href="#/">&larr; Home</a><h2>What HN rewarded, year by year</h2><div id="rings_body"></div><p class="rg_note"><a class="deep" href="#/explore">Explore the data yourself</a></p></section></div>
+<div class="view" role="main" id="v_lens" hidden><section class="aud"><a class="back" href="#/">&larr; Home</a><div id="lens_body"></div></section></div>
+<div class="view" role="main" id="v_today" hidden><section class="aud"><a class="back" href="#/">&larr; Home</a><div id="today_body"></div></section></div>
+<div class="view" role="main" id="v_story" hidden>
+<section class="hero">
+  <p class="kicker">Hacker News, <span id="bigcount">...</span> <span id="kicker_n">posts</span></p>
+  <h1>Where does the <span class="ac">attention</span> live?</h1>
+  <p class="dek" id="dek">Every story since 2006, asked one question through every lens. Scroll.</p>
+  <div class="arrow">↓</div>
+</section>
+
+<section class="prose"><p id="intro"></p></section>
+
+<section class="scrolly" id="s_pts" data-tall="300">
+  <div class="sticky ptsstick">
+    <p class="kicker">First, a quick definition</p>
+    <h2>What is a point?</h2>
+    <div class="story" id="pts_card"><div class="arrow2">&#9650;</div><div><div class="stitle">A story you just posted <span class="ill">illustration</span></div><div class="smeta"><b id="pts_n">1</b> points &middot; <span id="pts_t">0 hours</span> ago</div></div></div>
+    <p class="caption big" id="cap_pts"></p>
+    <p class="src" id="src_pts"></p>
+  </div>
+</section>
+
+<section class="scrolly" id="s_lz" data-tall="340">
+  <div class="sticky">
+    <h2>Almost all the attention sits in a sliver of stories</h2>
+    <p class="sub">Share of all points held by the top X% of stories</p>
+    <div class="chart"><svg id="svg_lz" role="img" aria-label="Lorenz curve: the share of all points held by the top share of stories, rising far below the equal-split line"></svg></div>
+    <p class="caption" id="cap_lz"></p>
+  </div>
+</section>
+
+<section class="lenses" id="s_lens">
+  <h2>Same question, every lens</h2>
+  <p class="lede" id="lede_lens"></p>
+  <details class="pts"><summary>What are points?</summary><div><p>Points are the score Hacker News shows next to a story. People vote stories up, and HN ranks a story by dividing its points by a power of the time since it was submitted (<a href="https://news.ycombinator.com/newsfaq.html" target="_blank" rel="noopener">HN FAQ</a>).</p><p>HN's <a href="https://github.com/HackerNews/API" target="_blank" rel="noopener">API docs</a> define <code>score</code> as a story's score (or a poll option's count), and their comment example has no score field. So comments carry no points in this data, and every points number here is story points.</p><p>Each score was recorded when the item was fetched, so the newest stories may still be gaining points.</p></div></details>
+  <div class="mgrid" id="mgrid"></div>
+</section>
+
+<section class="bars" id="s_auth">
+  <h2>Authors: the center of gravity</h2>
+  <p class="lede" id="lede_auth"></p>
+  <div class="barlist" id="bars_auth"></div>
+</section>
+
+<section class="bars alt" id="s_dom">
+  <h2>Domains: where the weight comes from</h2>
+  <p class="lede" id="lede_dom"></p>
+  <div class="barlist" id="bars_dom"></div>
+</section>
+
+<section class="bars" id="s_word">
+  <h2>Words: what the heavy titles say</h2>
+  <p class="lede" id="lede_word"></p>
+  <div class="barlist" id="bars_word"></div>
+</section>
+
+<section class="dark clock" id="s_clock">
+  <h2>The clock: when attention is awake</h2>
+  <p class="lede" id="lede_clock"></p>
+  <div class="clockbox"><svg id="svg_clock" viewBox="0 0 400 400" role="img" aria-label="Clock chart: stories and points by hour of the day, UTC"></svg></div>
+  <p class="legend"><i class="sw a"></i> share of points <i class="sw b"></i> share of items</p>
+  <h3 class="h3">Hour by weekday (points, UTC)</h3>
+  <div id="heat"></div>
+</section>
+
+<section class="bars" id="s_cal">
+  <h2>Days and months</h2>
+  <p class="lede" id="lede_cal"></p>
+  <h3 class="h3">Weekday: points per item vs the average</h3>
+  <div class="barlist idx" id="idx_wd"></div>
+  <h3 class="h3">Month: points per item vs the average</h3>
+  <div class="barlist idx" id="idx_mo"></div>
+</section>
+
+<section class="bars alt" id="s_type">
+  <h2>Items, points, comments</h2>
+  <p class="lede" id="lede_type"></p>
+  <div class="barlist" id="bars_type"></div>
+</section>
+
+<section class="bars" id="s_hist">
+  <h2>The whole archive, month by month</h2>
+  <p class="lede" id="lede_hist">Loading the long view...</p>
+  <div id="hist_zoom"></div>
+  <div id="hist_charts"></div>
+</section>
+
+<section class="hall" id="s_hall">
+  <h2>Hall of fame</h2>
+  <p class="lede">The highest-scoring posts in the dataset.</p>
+  <ol id="hall"></ol>
+</section>
+
+<footer><p id="foot_note" style="max-width:560px;margin:0 auto 12px"></p>Data: Hacker News (public API / dataset). CSV chunks in <a href="data/manifest.json">data/</a>. Built by an AI agent for Agam.</footer>
+</div>
+<div class="view" role="main" id="v_hyp" hidden>
+<section class="hypo" id="s_hyp">
+  <a class="back" href="#/" aria-label="Back to home">&larr;<span>Back</span></a>
+  <p class="kicker">Every card</p>
+  <h2>Hypotheses, tested</h2>
+  <p class="lede">Each card states a guess, what the data should show if it is true, and the check. Wrong guesses stay on the page.</p>
+  <p class="hyp-tally" id="hyp_tally"></p>
+  <div id="hyp_list"></div>
+  <h3>How to read these cards</h3>
+  <p class="caveat-note">The cards from h300 onward copy their thresholds from the older cards, so they are exploratory, not blind pre-registrations. The odd-and-fun word lists and thresholds were set while looking at earlier summaries. Theme cards (H319 onward) compare the latest 12 months with every earlier story since 2006, matched on title only. A falling share is not proof that adoption fell. Four older cards (H112, H113, H114, H119) stay frozen because they need comments or source domains, which the archive does not hold. Scores are a snapshot of a short window. Cards H135-H149 use a fixed snapshot window and do not refresh daily. Wrong guesses stay on the page.</p>
+</section>
+
+</div>
+<div class="view" role="main" id="v_explore" hidden>
+<section class="explore" id="hist">
+  <h2>All of Hacker News</h2>
+  <p class="lede">Every month from the first stories in 2006 to now. Counts and word trends load in a moment.</p>
+  <p class="lede"><a class="deep" href="#/rings">See it year by year: themes, domains and story types</a></p>
+  <div id="hist_body"></div>
+</section>
+<section class="explore" id="explore">
+  <h2>Search the newest items, with authors</h2>
+  <p class="lede">Posts, comments, jobs and polls with author names, which only the newest items carry (the archive search above has no authors). The full CSV is about <span id="mb">...</span>, so pick how much to load (newest first).</p>
+  <div class="loadrow"><select id="loadn" aria-label="How many posts to load"></select><button id="loadbtn" class="cta">Load</button></div>
+  <div id="status"></div><div id="bar"><i id="barfill"></i></div>
+  <div id="app" hidden>
+    <div id="filters">
+      <input id="q" type="search" aria-label="Search titles" placeholder="Search titles (words, space = AND)" autocomplete="off">
+      <div class="row"><input id="by" type="search" aria-label="Author" placeholder="Author"><input id="domain" type="search" aria-label="Domain" placeholder="Domain"></div>
+      <div class="row"><label>From<input id="from" type="date"></label><label>To<input id="to" type="date"></label></div>
+      <div class="row"><label>Type<select id="type"><option value="">All</option></select></label><label>Min score<input id="minscore" type="number" min="0" value="0"></label></div>
+      <div class="row"><button id="reset" type="button">Reset</button><span id="count"></span></div>
+      <p class="src rg_fine" id="load_src"></p>
+    </div>
+    <div class="card" id="lens"><h3>Center of gravity (for the current filter)</h3>
+      <div class="row"><label>Lens<select id="lens_k"><option value="by">Author</option><option value="domain">Domain</option><option value="word">Title word</option><option value="hour">Hour (UTC)</option><option value="weekday">Weekday</option><option value="month">Month</option><option value="type">Type</option></select></label>
+      <label>Weight<select id="lens_m"><option value="points">Points</option><option value="comments">Comments</option><option value="posts">Posts</option></select></label></div>
+      <details class="pts sm"><summary>What are points?</summary><div><p>Points are the score Hacker News shows next to a story. People vote stories up, and HN ranks a story by dividing its points by a power of the time since it was submitted (<a href="https://news.ycombinator.com/newsfaq.html" target="_blank" rel="noopener">HN FAQ</a>).</p><p>HN's <a href="https://github.com/HackerNews/API" target="_blank" rel="noopener">API docs</a> define <code>score</code> as a story's score (or a poll option's count), and their comment example has no score field. So comments carry no points in this data, and every points number here is story points.</p><p>Each score was recorded when the item was fetched, so the newest stories may still be gaining points.</p></div></details><div id="lens_out"></div></div>
+    <div id="charts">
+      <div class="card"><h3>Posts per month</h3><div class="cv"><canvas id="c_month"></canvas></div></div>
+      <div class="card"><h3>Score distribution</h3><div class="cv"><canvas id="c_score"></canvas></div></div>
+      <div class="card"><h3>Top domains</h3><div class="cv tall"><canvas id="c_dom"></canvas></div></div>
+      <div class="card"><h3>Hour of day (UTC)</h3><div class="cv"><canvas id="c_hour"></canvas></div></div>
+      <div class="card"><h3>Top authors</h3><div class="cv tall"><canvas id="c_auth"></canvas></div></div>
+    </div>
+    <div id="results">
+      <div class="rh"><h3>Posts</h3><select id="sort" aria-label="Sort posts by"><option value="score">Top score</option><option value="comments">Most comments</option><option value="new">Newest</option><option value="old">Oldest</option></select></div>
+      <ol id="list"></ol>
+      <div class="pager"><button id="prev">Prev</button><span id="page"></span><button id="next">Next</button></div>
+    </div>
+  </div>
+</section>
+</div>
+<div class="view" role="main" id="v_submit" hidden>
+<section class="doc">
+  <h2>Submit a hypothesis</h2>
+  <p class="lede">Guess something about Hacker News, say in advance what the data must show, and the site checks it.</p>
+  <ol>
+    <li>Fork the repo.</li>
+    <li>Copy a card in <code>hypotheses/</code> to <code>hypotheses/hNNN-your-name.json</code>, using the next free number.</li>
+    <li>Fill it in. Write the verdict thresholds before you look at the result, and include a rule that refutes you.</li>
+    <li>Run <code>node tests/hypotheses.test.js</code> to see your verdict.</li>
+    <li>Open a pull request with only that file.</li>
+  </ol>
+  <p>A check runs on the PR. It fails if the card is malformed, cannot fail, points at missing data, or touches other files. The owner reviews and merges, then the card is published on the next deploy. Failed hypotheses are shown too.</p>
+  <p><a class="btn" href="https://github.com/agamrafaeli-instinct/hn-1m-explorer/blob/main/CONTRIBUTING.md">Full instructions</a> <a class="btn alt2" href="https://github.com/agamrafaeli-instinct/hn-1m-explorer/blob/main/HYPOTHESES.md">Card format</a></p>
+</section>
+</div>
+<div class="view" role="main" id="v_lesson" hidden>
+<section class="doc lesson">
+  <p class="kicker">The main idea</p>
+  <h2>A fall from a peak is not a return to the past</h2>
+  <p class="lede" id="ls_lede"></p>
+  <div id="ls_gpt"></div>
+  <h3>The same test on other topics</h3>
+  <p>Same chosen period for every row, the latest 12 months. Only the baseline changes. Share of story titles that match the topic's word list.</p>
+  <div id="ls_rows"></div>
+  <p class="caveat-note" id="ls_frame"></p>
+  <h3>How to read trends</h3>
+  <ol class="steps">
+    <li><b>Fix the latest window.</b> Pick one recent period, here the last 12 complete months, and do not change it.</li>
+    <li><b>Swap the baseline.</b> Compare it to the topic's peak and to all earlier history. A trend that looks different against each is the interesting kind.</li>
+    <li><b>Name the pattern.</b> Reversal: below the peak, above history. Peak decay: below both. Emergence: above both. Composition shift: the mix inside the topic changes, like data centers moving toward power, water and local opposition. A pattern matters when it supports an argument you can test, not only when the windows disagree.</li>
+    <li><b>Watch vocabulary drift.</b> People rename things. "Basic income" and "UBI" are one idea with two words, and a single word hides that.</li>
+    <li><b>Check the dictionary.</b> List what the word list matches and misses. "Ask YC:" is the forum, not the company. "UBI" is also a Linux file system. Read a sample of matches before you trust a number.</li>
+  </ol>
+  <p class="caveat-note" id="ls_cav"></p>
+  <p><a class="btn" href="#/hypotheses">See the tested cards</a> <a class="btn alt2" href="#/explore">Open the explorer</a></p>
+</section>
+</div>
+<div class="view" role="main" id="v_how" hidden>
+<section class="doc">
+  <h2>Method</h2>
+  <p class="lede">Every number on this site is computed from public Hacker News data, in your browser.</p>
+  <ul>
+    <li><b>Data.</b> Every Hacker News story since <span id="how_start">2006</span>, from a public archive: titles, links, points and comment counts, plus daily counts of stories, comments, jobs and polls. Comment text and author names are held only for the newest items, which a daily job pulls from the public HN API. Exact counts and dates are in data/archive/manifest.json and data/manifest.json.</li>
+    <li><b>Centers of gravity.</b> For each lens (author, domain, words, hour, weekday, month, points, comments, type) we measure how concentrated points are, for example what share the top 1% of stories hold.</li>
+    <li><b>Year by year.</b> Themes are the share of a year's story titles that name the theme. Top sites are counted from each month's top 20 domains. Both are built from the full archive.</li>
+    <li><b>Questions.</b> Each card asks one question, sets the number that would answer it before looking, and shows the result with its caveats. The answer is computed from the data, never typed. Wrong guesses stay on the page.</li>
+    <li><b>Today's story.</b> Each day a script reads the monthly title counts and looks for topics whose answer changes with the window you pick, or whose latest month jumps above the year before. It ranks them, skips any topic shown in the last 90 days, writes the word list it used and publishes the top one by itself. Every story states its dates and needs at least 30 matching stories in the smaller window. It tests the topic on the current data and is not a prediction.</li>
+    <li><b>Download.</b> Every saved week, as <a href="data/exports/weekly.csv">CSV</a> or <a href="data/exports/weekly.json">JSON</a>. <a href="https://github.com/agamrafaeli-instinct/hn-1m-explorer/blob/main/docs/EXPORTS.md">What each column means</a>.</li>
+    <li><b>Daily checks.</b> Each daily update is checked before it is saved: row counts and file hashes against the manifest, no repeated ids, no unknown item types, and a few wide ranges, such as the share of stories that are dead or deleted. A second check compares the new data with the last saved day: the window keeps its size, the scan never moves back and the archive only grows. If a check breaks, that day is not saved, the site stays on the last good data and one issue is opened. <a href="https://github.com/agamrafaeli-instinct/hn-1m-explorer/blob/main/docs/DATA_CHECKS.md">The checks and their limits</a>.</li>
+    <li><b>Caveats.</b> About 89% of items are comments, which have no points, so point and comment lenses use stories only. The archive holds low points for 2023 and 2026, so charts that use points flag or skip those years. Times are UTC.</li>
+  </ul>
+  <p><a class="btn" href="#/lesson">How to read trends</a> <a class="btn" href="#/story">Read the full story</a> <a class="btn alt2" href="#/explore">Open the explorer</a></p>
+</section>
+</div>
+<div class="view" role="main" id="v_saga" hidden><div id="saga_bar" aria-hidden="true"></div><article class="saga"><section class="sg_beat sg_hook" id="sg1"><p class="sg_k">Hacker News, every story since 2006</p><h1>HN swears it's about everything. We counted.</h1><p class="sg_s">Every story and the points it earned, asked one question at a time.</p><a class="sg_more" href="#sg2">Scroll</a></section><section class="sg_beat" id="sg2"><h2>Every story, counted</h2><div id="sg_count"></div></section><section class="sg_beat" id="sg3"><h2>Year by year</h2><p class="sg_p">In six general-interest themes (space, games, privacy, health, history and science), 2010 and 2025 look almost the same. In six technology themes they do not: React peaked in 2017, and Rust and LLMs are highest in 2026. Tap any year to see its mix. 2026 is a partial year.</p><div id="sg_rings"></div></section><section class="sg_beat" id="sg4"><h2>Two things only the full archive shows</h2><h3>A few sites hold most of the points</h3><p class="sg_p">There are 543,583 sites behind the stories. The top 1% of them hold about two thirds of all points.</p><div class="sgx_bars" role="img" aria-label="Top 1 percent of sites: about 68 percent of points. All other sites: about 32 percent."><div class="sgx_bar"><span>Top 1% of sites</span><i style="width:68%"></i><b>68%</b></div><div class="sgx_bar"><span>Other 99%</span><i style="width:32%"></i><b>32%</b></div></div><p class="sg_cav">Caveat: only stories with a link count. Points are as saved when we fetched each story. Source: data/atlas/concentration.json.</p><h3>Quiet for years, then back</h3><p class="sg_p">285 times, a word or a site went quiet for a year or more and then came back to at least half its old share for three months running. Half of those quiet spells lasted between 22 and 57 months. The middle one lasted 37.</p><div class="sgx_bars" role="img" aria-label="Quiet spells by length: 79 of 1 to 2 years, 58 of 2 to 3, 45 of 3 to 4, 39 of 4 to 5, then fewer."><div class="sgx_bar"><span>1 to 2 years</span><i style="width:100%"></i><b>79</b></div><div class="sgx_bar"><span>2 to 3 years</span><i style="width:73%"></i><b>58</b></div><div class="sgx_bar"><span>3 to 4 years</span><i style="width:57%"></i><b>45</b></div><div class="sgx_bar"><span>4 to 5 years</span><i style="width:49%"></i><b>39</b></div><div class="sgx_bar"><span>5+ years</span><i style="width:80%"></i><b>64</b></div></div><p class="sg_cav">Caveat: these are story counts and shares of title words and sites with at least 60 stories, not points. A return needs three months in a row, so a single spike does not count. Rules: docs/RESURFACING_SPEC.md.</p></section><section class="sg_beat" id="sg5"><h2>The answer, and what it cannot settle</h2><p class="sg_p">Our best answer: HN is not about everything, and not about one thing. In the themes we tracked, the general-interest ones (space, games, privacy, health, history and science) take almost the same share of story titles in 2010 and 2025. The technology ones move: React peaked in 2017, and Rust and LLMs are highest in 2026.</p><h3>What we cannot tell you</h3><ul class="sg_ul"><li>Do comments show the same taste as stories? We have no comments.</li><li>Would reading the linked pages give different themes than matching words in titles?</li><li>Do points measure interest, or just timing and a spot on the front page?</li><li>Will 2026 keep its pattern? It is a partial year, and points are low for 2023 and 2026, so we compare ratios.</li><li>Why do the general themes hold while the technology ones move? We have not tested a cause.</li></ul></section><section class="sg_beat" id="sg9"><h2>Start anywhere</h2><form class="sg_find" id="sg_find" role="search"><label for="sg_q">Search story titles</label><div><input id="sg_q" type="search" maxlength="80" autocomplete="off" placeholder="A word or two"><button type="submit" class="btn">Search</button></div></form><a class="deep" href="#/explore"><b>Explore the data</b><span>Search stories, zoom into a year</span></a><a class="deep" href="#/rings"><b>Year by year</b><span>What HN rewarded, 2006 to now</span></a><a class="deep" href="#/phoenix"><b>Quiet, then back</b><span>Words and sites that went quiet and returned</span></a><a class="deep" href="#/hypotheses"><b>Hypotheses, tested</b><span>Claims about HN, checked against the archive</span></a><a class="deep" href="#/w/engineers/"><b>This week</b><span>What moved on HN in the latest saved week</span></a><a class="deep" href="#/topics"><b>Topics</b><span>One chart per topic</span></a><a class="deep" href="#/compare"><b>Compare topics</b><span>Topic lines side by side</span></a><a class="deep" href="#/how"><b>Method</b><span>Where the numbers come from</span></a></section></article></div>
+<div class="view" role="main" id="v_compare" hidden><section class="cmpwrap"><div id="cmp"></div><p class="src rg_fine" id="cmp_src"></p><div class="cmp_foot"><a id="homeweek" class="cmp_week" href="#/w/engineers/"><b>This week</b> <span id="homeweek_s"></span> &rarr;</a><a class="cmp_week" href="#/topics"><b>Topics</b> &rarr;</a><a class="cmp_week" href="#/hypotheses"><b>Tests</b> &rarr;</a></div></section></div>
+<div class="view" role="main" id="v_topics" hidden><section class="cmpwrap"><h2 class="cmp_t">Topics</h2><p class="cmp_s">Each topic is a word list matched on story titles. Tap one for its chart and word list.</p><div id="topics_list"></div></section></div>
+<nav id="tabs" aria-label="Main">
+  <a href="#/" data-t="home"><i>&#8962;</i>Home</a>
+  <a href="#/explore" data-t="explore"><i>&#8981;</i>Explorer</a>
+  <a href="#/submit" data-t="submit"><i>+</i>Submit</a>
+  <a href="#/how" data-t="how"><i>?</i>Method</a>
+</nav>
+<script defer src="app.js"></script>
+<script defer src="hyp-eval.js"></script>
+<script defer src="hypotheses.js"></script>
+<script defer src="story.js"></script>
+<script defer src="lesson.js"></script>
+<script defer src="compare.js"></script>
+<script defer src="finder.js"></script>
+<script defer src="router.js"></script>
+</body></html>

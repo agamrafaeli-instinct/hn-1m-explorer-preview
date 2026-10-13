@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "id": "h309",
+  "title": "SQLite and DuckDB stories punch above their weight",
+  "author": "film-cards",
+  "audience": "engineers",
+  "hypothesis": "Small embedded databases get more points per story than the average story.",
+  "expect": "If true, points per SQLite/DuckDB story should be at least 1.5x the points of the average story in the same months, across all of 2006 to 2026 (1.1x is weak, 0.9x or lower refutes it).",
+  "check": {
+    "source": "data/film_shares.json",
+    "path": "monthly",
+    "label_field": "month",
+    "stat": "points_vs_month_mean",
+    "unit": "x",
+    "field": "localdb_p",
+    "count_field": "localdb_s",
+    "avg_points": "pts_total",
+    "avg_count": "total",
+    "per_label": "points per story against the same-month average",
+    "group_a": {
+      "label": "SQLite and DuckDB stories ({from} to {to})",
+      "indices": "all"
+    },
+    "group_b": {
+      "label": "Average story of the same months ({from} to {to})",
+      "indices": "all"
+    }
+  },
+  "verdicts": [
+    {
+      "when": {
+        "op": ">=",
+        "value": 1.5
+      },
+      "verdict": "supported",
+      "confidence": "strong"
+    },
+    {
+      "when": {
+        "op": ">=",
+        "value": 1.1
+      },
+      "verdict": "supported",
+      "confidence": "weak"
+    },
+    {
+      "when": {
+        "op": "<=",
+        "value": 0.9
+      },
+      "verdict": "refuted",
+      "confidence": "strong"
+    },
+    {
+      "else": true,
+      "verdict": "inconclusive",
+      "confidence": "inconclusive"
+    }
+  ],
+  "thresholds_note": "Exploratory. Thresholds copied from the card this one replaces."
+}

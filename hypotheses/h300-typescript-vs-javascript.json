@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "id": "h300",
+  "title": "TypeScript is replacing JavaScript in the conversation",
+  "author": "film-cards",
+  "audience": "engineers",
+  "hypothesis": "Engineers now talk about TypeScript more than plain JavaScript, and the gap keeps widening.",
+  "expect": "If true, the ratio of TypeScript stories to JavaScript stories should be at least 1.5x higher in the latest 12 months than in all earlier stories since 2006 (pooled) (1.15x is weak, 0.9x or lower refutes it).",
+  "check": {
+    "source": "data/film_shares.json",
+    "path": "monthly",
+    "label_field": "month",
+    "stat": "pooled_share_ratio",
+    "unit": "x",
+    "field": "typescript_s",
+    "per_label": "TypeScript per JavaScript story",
+    "display_pct": false,
+    "group_a": {
+      "label": "Latest 12 months ({from} to {to})",
+      "indices": {
+        "last": 12
+      },
+      "field": "typescript_s",
+      "per": "js_s"
+    },
+    "group_b": {
+      "label": "All earlier stories ({from} to {to})",
+      "indices": {
+        "before_last": 12
+      },
+      "field": "typescript_s",
+      "per": "js_s"
+    }
+  },
+  "verdicts": [
+    {
+      "when": {
+        "op": ">=",
+        "value": 1.5
+      },
+      "verdict": "supported",
+      "confidence": "strong"
+    },
+    {
+      "when": {
+        "op": ">=",
+        "value": 1.15
+      },
+      "verdict": "supported",
+      "confidence": "weak"
+    },
+    {
+      "when": {
+        "op": "<=",
+        "value": 0.9
+      },
+      "verdict": "refuted",
+      "confidence": "strong"
+    },
+    {
+      "else": true,
+      "verdict": "inconclusive",
+      "confidence": "inconclusive"
+    }
+  ],
+  "thresholds_note": "Exploratory. Thresholds copied from the card this one replaces."
+}
